@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label=".NET dashboard">
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#232742"/>
+  <path d="M18 24 L27 32 L18 40" fill="none" stroke="#8fb8ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M31 41 H45" fill="none" stroke="#e6ebff" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="47" cy="17" r="6" fill="#35d39a"/>
+</svg>

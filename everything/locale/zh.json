@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Everything 文件搜索",
+    "description": "通过 Everything 1.5 索引以毫秒级速度搜索本机文件，支持 Everything 原生搜索语法，返回路径、大小、修改时间并支持分页，另提供语法速查工具。"
+  }
+}

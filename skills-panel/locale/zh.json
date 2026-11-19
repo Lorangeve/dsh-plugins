@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "技能",
+    "description": "列出当前 profile 能发现的技能，可预览 SKILL.md，并用开关控制磁盘技能对模型和 / 菜单是否可见。"
+  }
+}

@@ -1,0 +1,4 @@
+# Skills panel: one Host route group for discovery and toggling, one Client panel.
+- insert:
+    - id: skills-panel
+      name: '@local/skills-panel'

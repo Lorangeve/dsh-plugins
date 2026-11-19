@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "PixPin screen and desktop actions",
+    "description": "Lets the assistant capture the screen with PixPin, annotate and pin it, and run orchestrated mouse/keyboard actions with AutoHotkey."
+  }
+}

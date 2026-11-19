@@ -1,0 +1,38 @@
+{
+  "name": "@local/dsh-tool-everything",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Everything 1.5 file search tools for DeepSeek Harness: instant index queries with Everything's own search syntax.",
+  "keywords": [
+    "dsh",
+    "plugin",
+    "everything",
+    "search",
+    "windows"
+  ],
+  "exports": {
+    ".": "./index.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "ipc.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Lorangeve/dsh-plugins.git",
+    "directory": "everything"
+  }
+}

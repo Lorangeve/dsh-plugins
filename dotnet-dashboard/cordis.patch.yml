@@ -1,0 +1,3 @@
+- insert:
+    - id: dotnet-dashboard
+      name: '@local/dotnet-dashboard'

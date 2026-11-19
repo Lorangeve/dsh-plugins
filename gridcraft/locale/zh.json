@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "GridCraft 桥接",
+    "description": "连接 GridCraft 表格应用，把它的命令作为 MCP 工具提供给智能体。"
+  }
+}

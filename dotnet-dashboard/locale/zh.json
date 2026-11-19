@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": ".NET 仪表盘",
+    "description": "显示本机 .NET SDK 与 NuGet 源状态，并为 .NET 项目提供指导性边栏。"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": ".NET dashboard",
+    "description": "Shows the local .NET SDK and NuGet sources, and gives .NET projects a guidance sidebar."
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Everything file search",
+    "description": "Answer file searches from the Everything 1.5 index in milliseconds, with Everything's own query syntax, path/size/date results and paging, plus a syntax reference tool."
+  }
+}

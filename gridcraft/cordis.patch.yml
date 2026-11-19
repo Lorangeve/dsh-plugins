@@ -1,0 +1,28 @@
+# GridCraft bridge: turns the app's JSON-lines control channel into MCP tools.
+# The launcher starts GridCraft with `--control <port>` when the channel is
+# absent, so the session that follows always sees a live window.
+#
+# Paths are resolved when the profile loads, so this bundle works from any
+# checkout:
+#   GRIDCRAFT_NODE    Node-compatible executable. Default: this DSH process's
+#                     own executable, which also runs as Node on the desktop app.
+#   GRIDCRAFT_BRIDGE  absolute path to bridge.mjs. Default: the copy linked into
+#                     the `desktop` profile. Set it when DSH_HOME or the profile
+#                     name differs.
+- insert:
+    - id: gridcraft-mcp
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: gridcraft
+        transport: stdio
+        command: !!js (process.env.GRIDCRAFT_NODE ?? process.execPath)
+        env:
+          # On the desktop build process.execPath is Electron itself; this makes
+          # it behave as plain Node instead of opening a second window.
+          ELECTRON_RUN_AS_NODE: '1'
+        args:
+          - !!js (process.env.GRIDCRAFT_BRIDGE ?? (process.env.USERPROFILE + '/.dsh/profiles/desktop/node_modules/@local/gridcraft/bridge.mjs'))
+        failOnStartupError: true
+        reconnect:
+          enabled: true
+          maxAttempts: 10

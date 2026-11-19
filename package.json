@@ -1,0 +1,15 @@
+{
+  "name": "dsh-plugins",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A collection of local DeepSeek Harness plugins: Everything search, .NET dashboard, GridCraft bridge, PixPin screen and desktop actions, skills panel.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Lorangeve/dsh-plugins.git"
+  },
+  "scripts": {
+    "check": "node scripts/check.mjs"
+  }
+}

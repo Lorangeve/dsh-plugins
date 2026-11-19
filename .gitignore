@@ -1,0 +1,15 @@
+# Dependencies and local installs
+node_modules/
+pnpm-lock.yaml
+
+# Editor and OS noise
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs, temp files, local overrides
+*.log
+*.local.yml
+.tmp/

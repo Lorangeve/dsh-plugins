@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "GridCraft bridge",
+    "description": "Connects the GridCraft spreadsheet app and exposes its commands to the agent as MCP tools."
+  }
+}
