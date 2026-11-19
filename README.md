@@ -58,7 +58,7 @@ GridCraft MCP bridge, PixPin screen + desktop actions, skills panel). See
 | dotnet-dashboard | 调用 `dotnet_status` | 返回 `dotnet 10.0.403`、SDK 列表、NuGet 源、项目建议 |
 | everything | 调用 `everything_help` / `everything_search` | 管道 `\\.\pipe\Everything IPC (1.5a)`，Everything 1.5.0.1409，查询毫秒级返回 |
 | gridcraft | `mcp__gridcraft__list_windows` + MCP `initialize` 握手 | 返回窗口 `Book1`；`serverInfo` = gridcraft 0.19.1 |
-| pixpin-screen | 工具列表 + 本机标注截图演示 | `pixpin_screenshot` / `desktop_action` 可用 |
+| pixpin-screen | 调用 `pixpin_screenshot`（active-window）与 `desktop_action`（dry_run） | 返回 1920×40 截图；生成 611 字符的 AutoHotkey 脚本 |
 | skills-panel | 右侧边栏「技能」页 | 技能列表、预览与开关可用 |
 
 ---
@@ -146,7 +146,7 @@ GridCraft MCP bridge, PixPin screen + desktop actions, skills panel). See
 | 调用 `everything_search`（如 `ext:ps1 size:>10kb`） | 毫秒级返回路径、大小、修改时间 |
 | 调用 `mcp__gridcraft__list_windows` | 返回一个或多个 GridCraft 窗口 |
 | 右侧边栏出现「.NET 仪表盘」「技能」胶囊 | 面板可打开、可刷新 |
-| `pixpin_screenshot`（`target: "active-window"`） | 返回截图并附带图片 |
+| `pixpin_screenshot`（`target: "all-screens"`） | 返回截图并附带图片 |
 
 ---
 
