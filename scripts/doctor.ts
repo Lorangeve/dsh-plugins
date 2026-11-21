@@ -129,6 +129,8 @@ function newestSource(directories: string[]): number {
     const full = path.join(ROOT, directory)
     if (!existsSync(full)) continue
     for (const file of walk(full)) {
+      // bin/ and obj/ hold generated sources, not hand-written ones.
+      if (/(^|[\\/])(bin|obj)([\\/]|$)/i.test(path.relative(full, file))) continue
       if (!/\.(cs|csproj|props|targets)$/i.test(file)) continue
       newest = Math.max(newest, statSync(file).mtimeMs)
     }
