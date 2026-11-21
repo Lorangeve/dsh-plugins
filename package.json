@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "A collection of local DeepSeek Harness plugins: Everything search, .NET dashboard, GridCraft bridge, PixPin screen and desktop actions, skills panel.",
+  "description": "A collection of local DeepSeek Harness plugins: Everything search, .NET dashboard, GridCraft bridge, PixPin screen and desktop actions, skills panel, desktop notifications, and a long-lived .NET plugin host.",
   "license": "MIT",
   "repository": {
     "type": "git",

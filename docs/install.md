@@ -1,6 +1,6 @@
 # 安装、更新与排错
 
-本仓库的 5 个插件以 **本地 bundle** 的方式挂进 DSH profile，不走 npm 发布。推荐用桌面版的
+本仓库的 7 个插件以 **本地 bundle** 的方式挂进 DSH profile，不走 npm 发布。推荐用桌面版的
 插件管理界面安装；界面不可用时再手动 link。
 
 ## 0. 准备
@@ -23,8 +23,9 @@ Test-Path "$env:USERPROFILE\.dsh\profiles\desktop\node_modules"
 git clone https://github.com/Lorangeve/dsh-plugins.git D:\mycoding\plugins
 ```
 
-目录本身就是「插件根」：`dotnet-dashboard`、`everything`、`gridcraft`、`pixpin-screen`、
-`skills-panel` 各自是一个独立包。装哪个就 link 哪个，可以只装一部分。
+目录本身就是「插件根」：`desktop-notify`、`dotnet-dashboard`、`dotnet-host`、`everything`、
+`gridcraft`、`pixpin-screen`、`skills-panel` 各自是一个独立包。装哪个就 link 哪个，可以只装
+一部分；`desktop-notify` 依赖 `dotnet-host`，两个要一起装。
 
 ## 2. 安装到 desktop profile（推荐）
 
@@ -32,7 +33,7 @@ git clone https://github.com/Lorangeve/dsh-plugins.git D:\mycoding\plugins
 2. 选择「从本地目录安装」，依次指向需要的插件目录，例如
    `D:\mycoding\plugins\gridcraft`。
 3. 等待依赖同步完成，重启 DSH。
-4. 回插件页确认 5 个 bundle 都是启用状态，且没有加载错误。
+4. 回插件页确认 7 个 bundle 都是启用状态，且没有加载错误。
 
 桌面 profile 由 Electron 应用独占管理，`dsh --profile desktop` 的 CLI 命令（包括
 `--dump-config`）会被拒绝，这是预期行为。
@@ -91,6 +92,8 @@ cmd /c mklink /J "$profile\node_modules\@local\pixpin-screen" "$plugins\pixpin-s
 | pixpin-screen | PixPin 3.6.x | 装默认路径，或设置 `PIXPIN_PATH` |
 | pixpin-screen（桌面操作） | AutoHotkey v2 | 装 v2，不要用 v1；或设置 `AUTOHOTKEY_PATH` |
 | dotnet-dashboard | （可选）.NET SDK | 没有也能用；面板会给安装建议 |
+| dotnet-host | .NET 10 运行时 | worker 是框架依赖发布；缺运行时 `dotnet_host_status` 会报 worker 退出 |
+| desktop-notify | 不需要额外软件 | 依赖 dotnet-host；在系统「通知和操作」里允许 DeepSeek Harness 通知 |
 
 ## 5. 配置
 
@@ -110,15 +113,16 @@ cmd /c mklink /J "$profile\node_modules\@local\pixpin-screen" "$plugins\pixpin-s
 ### YAML 配置
 
 大部分插件的可调项写在各自 `cordis.patch.yml` 的 `config` 里（例如 Everything 的
-`instance` / `pipe`、PixPin 的 `pixpinPath` / `captureTimeoutMs`）。改完重启 DSH。
-目前只有 `everything` 在 README 里记录了完整的配置字段。
+`instance` / `pipe`、PixPin 的 `pixpinPath` / `captureTimeoutMs` / `desktopAction`）。
+改完重启 DSH。每个插件 README 的「配置」一节都列了完整字段。
 
 ## 6. 验证
 
-按 README 的[验证清单](../README.md#验证清单)逐项确认。最快的三条：
+按 README 的[验证清单](../README.md#验证清单)逐项确认。最快的几条：
 
 ```
 dotnet_status()
+dotnet_host_status()
 everything_help()
 mcp__gridcraft__list_windows()
 ```
@@ -146,5 +150,8 @@ junction，并从 `package.json` 的 `dependencies` / `dsh.profile.bundles` 里�
 | 截图是黑的 / 区域截图没人响应 | 会话是否锁屏、是否 RDP 断开、是否有 UAC 安全桌面 |
 | `dotnet_status` 显示未安装 | `dotnet --version` 是否可用；`DOTNET_ROOT`；装完 SDK 后重启 DSH |
 | 「技能」页为空 | 技能目录是否存在：`<项目>/.dsh/skills`、`~/.dsh/skills`、`~/.agents/skills` |
+| `dotnet_host_status` 显示 worker 未运行 / 反复重启 | 是否装了 .NET 10 运行时；`bin/DshDotnet.Host.exe` 是否还在；杀毒软件是否把 worker 丢进受限令牌（见 dotnet-host README） |
+| 收不到桌面通知 | 系统通知是否允许；`%TEMP%\DeepSeekHarness\desktop-notify.log`；`desktopNotify` 服务是否注册（`GET /dsh-notify/status` 的 `subscribers`） |
+| 点通知没反应 / 打开了新标签页 | 界面没连上 Typert Remote 流时会走浏览器兜底，属预期；`subscribers: 0` 说明页面那条流没建起来 |
 
 仍然不行时，抓三样东西：`dsh --version`、插件页的加载错误、Host 日志里对应 bundle 的报错。
