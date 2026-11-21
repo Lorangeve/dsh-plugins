@@ -257,7 +257,7 @@ export function apply(ctx, config) {
       'warn',
       'desktop notifications are inactive: the .NET notification plugin is missing at '
         + `"${settings.dotnetPluginsDir}". Build it with ` +
-        '`dotnet publish -c Release -o ../../dotnet-plugins` inside src/DshDotnet.Notify.',
+        '`npm run build:dotnet` at the repository root (needs the .NET 10 SDK).',
     )
     return
   }

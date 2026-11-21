@@ -15,8 +15,11 @@ desktop.ini
 .tmp/
 .probe-spawn.json
 
-# .NET build intermediates. The published payloads stay tracked:
-# dotnet-host/bin/ and desktop-notify/dotnet-plugins/ are part of the plugins.
+# .NET build intermediates
 */src/**/bin/
 */src/**/obj/
 *.user
+
+# Built .NET payloads (npm run build:dotnet); never committed.
+dotnet-host/bin/
+desktop-notify/dotnet-plugins/

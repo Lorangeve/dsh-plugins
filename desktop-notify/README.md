@@ -60,6 +60,8 @@ Host 侧是一个普通 Cordis 服务：`ctx.provide('desktopNotify', …)`，�
 
 ## 依赖与体积
 
-- `dotnet-plugins/` 里带 24 MB 的 WinRT 投影（`Microsoft.Windows.SDK.NET.dll`），这是 .NET 发 toast 的必需依赖。
+- `dotnet-plugins/` 是构建产物（不入库），用 `npm run build:dotnet -- --project desktop-notify`
+  生成，需要 .NET 10 SDK；里面 24 MB 的 WinRT 投影（`Microsoft.Windows.SDK.NET.dll`）是 .NET 发
+  toast 的必需依赖。`npm run doctor` 会检查这一份 payload 和 worker 是否就绪。
 - 通知依赖系统「通知和操作」允许应用通知；完全收不到时看 `%TEMP%\DeepSeekHarness\desktop-notify.log`（注册/点击都会记一行）。
 - 如果 worker 所在目录被执行策略限制（见 dotnet-host 的 README），注册会失败，日志里会是 `UnauthorizedAccessException`；dotnet-host 默认会把 worker 镜像到 `%LOCALAPPDATA%` 来避开这种限制。

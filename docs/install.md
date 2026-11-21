@@ -27,7 +27,21 @@ git clone https://github.com/Lorangeve/dsh-plugins.git D:\mycoding\plugins
 `gridcraft`、`pixpin-screen`、`skills-panel` 各自是一个独立包。装哪个就 link 哪个，可以只装
 一部分；`desktop-notify` 依赖 `dotnet-host`，两个要一起装。
 
-## 2. 安装到 desktop profile（推荐）
+## 2. 构建 .NET payload（只有 .NET 插件需要）
+
+`dotnet-host` 和 `desktop-notify` 的 C# 产物不入库，先构建一次（需要 **.NET 10 SDK**）：
+
+```powershell
+npm run build:dotnet                              # 全部三个工程
+npm run build:dotnet -- --project dotnet-host     # 只要 worker + 示例插件
+npm run build:dotnet -- --project desktop-notify  # 只要通知插件
+```
+
+产物落在 `dotnet-host/bin/`（约 230 KB）和 `desktop-notify/dotnet-plugins/`（约 24 MB，主要是
+WinRT 投影），两者都在 `.gitignore` 里。**构建前先停用 `@local/dotnet-host`**（或退出 DSH），
+否则 worker 加载着的 DLL 被占用；脚本会给出提示。只跑 JS 插件的话可跳过这一步。
+
+## 3. 安装到 desktop profile（推荐）
 
 1. 打开 DSH 桌面版 →「设置 → 插件」。
 2. 选择「从本地目录安装」，依次指向需要的插件目录，例如
@@ -38,11 +52,11 @@ git clone https://github.com/Lorangeve/dsh-plugins.git D:\mycoding\plugins
 桌面 profile 由 Electron 应用独占管理，`dsh --profile desktop` 的 CLI 命令（包括
 `--dump-config`）会被拒绝，这是预期行为。
 
-## 3. 手动安装（备用）
+## 4. 手动安装（备用）
 
 适合非桌面 profile（如 `web`），或界面装不上时排查用。
 
-### 3a. 其他 profile（CLI）
+### 4a. 其他 profile（CLI）
 
 ```powershell
 dsh plugin --profile web add "file:D:/mycoding/plugins/everything"
@@ -52,7 +66,7 @@ dsh plugin --profile web add "file:D:/mycoding/plugins/everything"
 `%USERPROFILE%\.dsh\profiles\web\package.json` 的 `dsh.profile.bundles` 里出现了
 `@local/dsh-tool-everything`；如果 DSH 版本没有自动纳入，手动补一行。
 
-### 3b. desktop profile（手动 link）
+### 4b. desktop profile（手动 link）
 
 > 只在前一步的界面方式不可用时使用；操作前备份 profile 目录。
 
@@ -83,7 +97,7 @@ cmd /c mklink /J "$profile\node_modules\@local\pixpin-screen" "$plugins\pixpin-s
 如果 profile 里有 `pnpm-lock.yaml`，把对应条目改成同样的 `link:` 值，避免下次启动被改回去。
 保存后重启 DSH。
 
-## 4. 装外部软件
+## 5. 装外部软件
 
 | 插件 | 要装什么 | 建议 |
 | --- | --- | --- |
@@ -92,10 +106,10 @@ cmd /c mklink /J "$profile\node_modules\@local\pixpin-screen" "$plugins\pixpin-s
 | pixpin-screen | PixPin 3.6.x | 装默认路径，或设置 `PIXPIN_PATH` |
 | pixpin-screen（桌面操作） | AutoHotkey v2 | 装 v2，不要用 v1；或设置 `AUTOHOTKEY_PATH` |
 | dotnet-dashboard | （可选）.NET SDK | 没有也能用；面板会给安装建议 |
-| dotnet-host | .NET 10 运行时 | worker 是框架依赖发布；缺运行时 `dotnet_host_status` 会报 worker 退出 |
+| dotnet-host | **.NET 10 SDK**（构建 payload）+ **.NET 10 运行时**（运行 worker） | 缺 SDK 构建不了；缺运行时 `dotnet_host_status` 会报 worker 退出 |
 | desktop-notify | 不需要额外软件 | 依赖 dotnet-host；在系统「通知和操作」里允许 DeepSeek Harness 通知 |
 
-## 5. 配置
+## 6. 配置
 
 ### 环境变量
 
@@ -116,27 +130,32 @@ cmd /c mklink /J "$profile\node_modules\@local\pixpin-screen" "$plugins\pixpin-s
 `instance` / `pipe`、PixPin 的 `pixpinPath` / `captureTimeoutMs` / `desktopAction`）。
 改完重启 DSH。每个插件 README 的「配置」一节都列了完整字段。
 
-## 6. 验证
+## 7. 验证
 
 按 README 的[验证清单](../README.md#验证清单)逐项确认。最快的几条：
 
 ```
+npm run doctor
 dotnet_status()
 dotnet_host_status()
 everything_help()
 mcp__gridcraft__list_windows()
 ```
 
-## 7. 更新与卸载
+`npm run doctor` 会依次检查 .NET SDK、运行时、三份 payload、worker 握手和 profile 挂载；
+全部 ✓ 之后再点一遍 GUI。
+
+## 8. 更新与卸载
 
 **更新**：`git pull` → 重启 DSH。插件是 link 进去的，不需要重新安装。
-如果改了依赖（本仓库目前没有依赖），再在插件页重新同步一次。
+如果这次拉到 .NET 源码改动，先停用 `@local/dotnet-host` → `npm run build:dotnet` → 重启，
+否则 worker 还是旧的 DLL。JS 侧不需要构建。
 
 **卸载**：在「设置 → 插件」里禁用或移除对应 bundle；或删除 profile `node_modules\@local\<name>`
 junction，并从 `package.json` 的 `dependencies` / `dsh.profile.bundles` 里去掉那一行。
 插件目录本身可以保留，随时再装回来。
 
-## 8. 排错
+## 9. 排错
 
 | 现象 | 先查什么 |
 | --- | --- |
@@ -150,8 +169,10 @@ junction，并从 `package.json` 的 `dependencies` / `dsh.profile.bundles` 里�
 | 截图是黑的 / 区域截图没人响应 | 会话是否锁屏、是否 RDP 断开、是否有 UAC 安全桌面 |
 | `dotnet_status` 显示未安装 | `dotnet --version` 是否可用；`DOTNET_ROOT`；装完 SDK 后重启 DSH |
 | 「技能」页为空 | 技能目录是否存在：`<项目>/.dsh/skills`、`~/.dsh/skills`、`~/.agents/skills` |
-| `dotnet_host_status` 显示 worker 未运行 / 反复重启 | 是否装了 .NET 10 运行时；`bin/DshDotnet.Host.exe` 是否还在；杀毒软件是否把 worker 丢进受限令牌（见 dotnet-host README） |
-| 收不到桌面通知 | 系统通知是否允许；`%TEMP%\DeepSeekHarness\desktop-notify.log`；`desktopNotify` 服务是否注册（`GET /dsh-notify/status` 的 `subscribers`） |
+| `dotnet_host_status` 显示 worker 未运行 / 反复重启 | 先跑 `npm run doctor`：payload 是否构建过、.NET 10 运行时是否在；`bin/DshDotnet.Host.exe` 是否还在；杀毒软件是否把 worker 丢进受限令牌（见 dotnet-host README） |
+| `npm run build:dotnet` 报文件被占用 | worker 正在跑：插件页停用 `@local/dotnet-host`（或退出 DSH）再构建 |
+| 插件日志说 worker / 通知程序集缺失 | 没构建：仓库根目录跑 `npm run build:dotnet`（需要 .NET 10 SDK） |
+| 收不到桌面通知 | `npm run doctor` 看 `desktop-notify/dotnet-plugins` 是否齐全；系统通知是否允许；`%TEMP%\DeepSeekHarness\desktop-notify.log`；`GET /dsh-notify/status` 的 `subscribers` |
 | 点通知没反应 / 打开了新标签页 | 界面没连上 Typert Remote 流时会走浏览器兜底，属预期；`subscribers: 0` 说明页面那条流没建起来 |
 
 仍然不行时，抓三样东西：`dsh --version`、插件页的加载错误、Host 日志里对应 bundle 的报错。

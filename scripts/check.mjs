@@ -12,6 +12,12 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const IGNORED = new Set(['node_modules', '.git', '.github', 'scripts', 'docs']);
+/**
+ * Directories produced by `npm run build:dotnet` from the C# sources. They are
+ * git-ignored and only exist after a build, so `files` may list them without
+ * them being present in a fresh clone.
+ */
+const BUILD_OUTPUTS = new Set(['bin', 'dotnet-plugins']);
 const problems = [];
 const plugins = [];
 
@@ -74,6 +80,7 @@ async function checkPlugin(dir) {
 
   for (const entry of manifest.files ?? []) {
     if (entry.includes('*')) continue;
+    if (BUILD_OUTPUTS.has(entry.split('/')[0])) continue;
     await requirePath(path.join(dir, entry), `${where} files`);
   }
 

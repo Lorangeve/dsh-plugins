@@ -23,8 +23,12 @@
 | GridCraft | 0.19.1 | 需要能带 `--control` 启动 |
 | PixPin | 3.6.6.0 | 默认安装目录或 `PIXPIN_PATH` |
 | AutoHotkey | 2.0.31 | 只给 `desktop_action`；v1 语法不兼容 |
-| .NET SDK | 10.0.403（示例） | 任意受支持的 SDK 均可，没装也能显示建议 |
-| .NET 运行时 | 10.0.14（示例） | `dotnet-host` 的 worker 与 `desktop-notify` 的 toast 需要 |
+| .NET SDK | 10.0.403（示例） | 构建 `dotnet-host` / `desktop-notify` 的 payload 用（`npm run build:dotnet`） |
+| .NET 运行时 | 10.0.14（示例） | 运行 worker 与 toast 用；只有运行时、没有 SDK 时插件能跑但构建不了 |
+
+> `dotnet-host` 和 `desktop-notify` 的 C# 产物不入库：克隆后先 `npm run build:dotnet`（需要
+> .NET 10 SDK）。`npm run doctor` 会确认 SDK、运行时、三份 payload、worker 握手与 profile 挂载；
+> payload 缺失时插件只记一条警告，不会让 DSH 起不来。
 
 复现验证：
 

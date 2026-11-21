@@ -161,8 +161,8 @@ export function apply(ctx, config) {
     logNote(
       ctx,
       'warn',
-      `the .NET worker is missing at ${settings.hostPath}; publish it with ` +
-        '`dotnet publish src/DshDotnet.Host -c Release -o ../bin`.',
+      `the .NET worker is missing at ${settings.hostPath}; build it with ` +
+        '`npm run build:dotnet` at the repository root (needs the .NET 10 SDK).',
     )
     return
   }

@@ -110,12 +110,23 @@ worker 是**进程级单例**：插件重载时新实例会先回收旧 worker�
 
 ## 构建
 
+payload 不入库（`bin/` 在 `.gitignore` 里），克隆后先构建一次：
+
+```powershell
+npm run build:dotnet -- --project dotnet-host --project example-plugin
+```
+
+底层就是两次 `dotnet publish`（在仓库根目录执行）：
+
 ```powershell
 dotnet publish src/DshDotnet.Host  -c Release -o bin
 dotnet publish src/Example.Plugin  -c Release -o bin/plugins
 ```
 
-框架依赖发布（约 170 KB + 运行时），要求机器装了 .NET 10；要免依赖就加 `--self-contained -p:PublishSingleFile=true`（约 60–70 MB）。**构建前先停掉 worker**，否则 DLL 被占用。
+需要 **.NET 10 SDK**；框架依赖发布（约 230 KB + 运行时），运行 worker 只要 .NET 10 运行时。
+要免依赖就加 `--self-contained -p:PublishSingleFile=true`（约 60–70 MB）。**构建前先停掉 worker**
+（或在插件页停用 `@local/dotnet-host`），否则 DLL 被占用；`npm run doctor` 会报告 worker 是否
+在跑、payload 是否比源码旧。
 
 ## 基准
 

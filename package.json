@@ -10,6 +10,8 @@
     "url": "https://github.com/Lorangeve/dsh-plugins.git"
   },
   "scripts": {
-    "check": "node scripts/check.mjs"
+    "check": "node scripts/check.mjs",
+    "build:dotnet": "node scripts/build-dotnet.mjs",
+    "doctor": "node scripts/doctor.ts"
   }
 }
