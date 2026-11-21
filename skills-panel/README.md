@@ -20,9 +20,45 @@ availability with one control.
   bundled preset skills). These come from `app.asar` and are read-only here.
 - Every live session's layer is merged in, so preset-scoped skills appear too.
 
-Each row shows the skill name, its provider source, a two-line description, the
-instruction file path, and a switch. **View SKILL.md** opens the file below the
-row.
+The page has two levels: a **list** of every skill, grouped into Project, User and
+custom, Packaged and Other, and a **detail page** for a single skill. A group with
+no members is hidden and each group heading carries its count.
+
+**The list.** The header shows the title, the counters `N skills · N switchable ·
+N on` and a **Refresh** button, which reads `Reading…` while a read is in flight.
+Each row is a 48 px card: the skill name in monospace, its description clamped to
+one line, a source badge (Project / User / Custom / Packaged / Runtime), a
+**Read-only** badge when the panel may not rewrite the file, a **Partial** badge
+when the two invocation switches disagree, the switch, and a chevron. Clicking
+the row opens the detail page; the switch stays a separate control and only
+toggles. The instruction path is not shown here; it lives on the detail page.
+
+An empty list explains that a skill can simply be dropped into the user or
+project directory, and prints both directories. A warning line appears when
+discovery reports itself incomplete, and a failed read shows the reason plus a
+**Retry** button.
+
+**The detail page.** Opening a row replaces the list with that skill's page:
+
+- A **Skills** breadcrumb at the top is the back control (`Esc` also returns to
+  the list). This level has no page header of its own.
+- The skill's icon, its current state (`On`, `Off` or `Partial`) and the same
+  switch.
+- The name with source and **Read-only** badges, the description, and the
+  `SKILL.md` path in monospace.
+- **Invocation** — a fact list: `Source` (the badge label, or the raw source
+  string, or `—`), `Provider` (only when the skill declares one, shown as code),
+  `Model can call it`, `Slash menu` and `File is writable`, each `Yes` or `No`.
+- **When to use it** — the skill's `whenToUse` text, shown only when it declares
+  one.
+- **SKILL.md** — the file body in a scrollable block, with a **Copy** button in
+  the section header. The button stays disabled until the body has arrived and
+  reads `Copied` for a moment after a successful copy. A read error is reported
+  in place (`Could not read SKILL.md: …`); a skill without an instruction file
+  has no copy button and says `No instruction file to preview`.
+
+Switching from either level updates the entry in place and then re-reads the
+list, so the counters agree with the provider's own view.
 
 ## What the switch does
 
@@ -60,5 +96,7 @@ which is read-only. Their switch is disabled and marked read-only.
   layers of agents that are live at read time; a preset's skills appear only
   while a session with that preset is open.
 - Bundled providers that register skills at runtime do not always publish an
-  instruction-file path in their catalog summaries. Those rows show **No file**
-  instead of a preview; the switch stays read-only either way.
+  instruction-file path in their catalog summaries. Their detail page shows **No
+  instruction file to preview** instead of a body and offers no copy button; with
+  no path there is nothing to rewrite, so such a skill is read-only and its switch
+  stays disabled.
