@@ -365,6 +365,23 @@ function defaultPowershellPath() {
   return join(root, 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe');
 }
 
+/** Read one optional boolean switch; a non-boolean value is a configuration error. */
+function readSwitch(value, name, fallback) {
+  if (value === undefined || value === null) return fallback;
+  if (typeof value !== 'boolean') {
+    throw new Error(`${name} must be true or false (got ${JSON.stringify(value)})`);
+  }
+  return value;
+}
+
+/** Normalize the desktopAction switch; an unrecognized value is a configuration error. */
+function normalizeDesktopAction(value) {
+  if (value === undefined || value === null || value === 'auto') return 'auto';
+  if (value === false || value === 'off') return 'off';
+  if (value === true || value === 'on') return 'on';
+  throw new Error(`desktopAction must be "auto", "on", "off", true, or false (got ${JSON.stringify(value)})`);
+}
+
 /** Resolve the effective plugin settings. */
 function resolveSettings(config) {
   const value = config !== null && typeof config === 'object' ? config : {};
@@ -378,7 +395,19 @@ function resolveSettings(config) {
     captureTimeoutMs: number('captureTimeoutMs', DEFAULT_CAPTURE_TIMEOUT_MS),
     regionTimeoutMs: number('regionTimeoutMs', DEFAULT_REGION_TIMEOUT_MS),
     autohotkeyPath: typeof value.autohotkeyPath === 'string' ? value.autohotkeyPath.trim() : '',
+    capture: readSwitch(value.capture, 'capture', true),
+    desktopAction: normalizeDesktopAction(value.desktopAction),
   };
+}
+
+/** Best-effort loader log; a missing or non-standard logger must not fail apply(). */
+function logNote(ctx, level, message) {
+  try {
+    const logger = typeof ctx.logger === 'function' ? ctx.logger('pixpin-screen') : ctx.logger;
+    if (typeof logger?.[level] === 'function') logger[level](message);
+  } catch {
+    // Logging is advisory only.
+  }
 }
 
 /** Escape a Windows path for a PixPin script string literal. */
@@ -1331,14 +1360,34 @@ function imageResultContent(value) {
   ];
 }
 
+/** Register one tool only while its switch is on. */
+function registerToolWhen(ctx, enabled, name, factory) {
+  if (enabled) ctx.effect(factory, name);
+}
+
 /**
- * Register the screen-capture tool.
+ * Register the screen-capture tool and, unless its switch is off, the desktop-action tool.
  * @param {import('@deepseek-ai/cordis').Context} ctx registrant context.
  * @param {Record<string, unknown>} [config] optional row configuration.
  */
 export function apply(ctx, config) {
   const settings = resolveSettings(config);
-  ctx.effect(
+  const autohotkeyPath = settings.autohotkeyPath !== '' ? settings.autohotkeyPath : detectAutoHotkeyPath();
+  const desktopAction = settings.desktopAction === 'on'
+    || (settings.desktopAction === 'auto' && autohotkeyPath !== null);
+  if (!desktopAction && settings.desktopAction === 'auto') {
+    logNote(
+      ctx,
+      'warn',
+      'desktop_action is not registered: AutoHotkey v2 was not found. Install AutoHotkey v2 or set ' +
+        'autohotkeyPath/AUTOHOTKEY_PATH, or set desktopAction to "on" to register the tool anyway.',
+    );
+  }
+  if (!settings.capture) logNote(ctx, 'info', 'pixpin_screenshot is not registered because capture is false.');
+  registerToolWhen(
+    ctx,
+    settings.capture,
+    'pixpin-screen.tool',
     () =>
       ctx.tools.register({
         name: 'pixpin_screenshot',
@@ -1351,7 +1400,9 @@ export function apply(ctx, config) {
           'To communicate visually with the user, pass annotations (percent coordinates, 0-100 of the image size) to draw ' +
           'rectangles, ellipses, highlights, lines, arrows, numbered markers, and text labels, and set pin=true to leave the ' +
           'marked screenshot floating on the user\'s desktop as a PixPin pin. ' +
-          'Set grid=true to overlay a 10% coordinate grid with percentage labels when you plan desktop_action positions.',
+          (desktopAction
+            ? 'Set grid=true to overlay a 10% coordinate grid with percentage labels when you plan desktop_action positions.'
+            : 'Set grid=true to overlay a 10% coordinate grid with percentage labels when you need to read precise positions.'),
         parameters: {
           type: 'object',
           additionalProperties: false,
@@ -1492,10 +1543,12 @@ export function apply(ctx, config) {
           rawInput: args ?? {},
         }),
       }),
-    'pixpin-screen.tool',
   );
 
-  ctx.effect(
+  registerToolWhen(
+    ctx,
+    desktopAction,
+    'pixpin-screen.desktop-action',
     () =>
       ctx.tools.register({
         name: 'desktop_action',
@@ -1684,7 +1737,6 @@ export function apply(ctx, config) {
           rawInput: args ?? {},
         }),
       }),
-    'pixpin-screen.desktop-action',
   );
 }
 

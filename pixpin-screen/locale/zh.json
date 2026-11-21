@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "PixPin 截图与桌面操作",
-    "description": "让助手用 PixPin 截图、标注、贴图，并通过 AutoHotkey 编排鼠标键盘操作。"
+    "description": "让助手用 PixPin 截图、标注、贴图，并通过 AutoHotkey 编排鼠标键盘操作。桌面操作可以在插件配置里关掉，只保留截图。"
   }
 }

@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "PixPin screen and desktop actions",
-    "description": "Lets the assistant capture the screen with PixPin, annotate and pin it, and run orchestrated mouse/keyboard actions with AutoHotkey."
+    "description": "Lets the assistant capture the screen with PixPin, annotate and pin it, and run orchestrated mouse/keyboard actions with AutoHotkey. Desktop actions can be switched off in the plugin config to keep screen capture only."
   }
 }

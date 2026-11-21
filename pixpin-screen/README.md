@@ -1,7 +1,8 @@
 # PixPin 截图与桌面操作（@local/pixpin-screen）
 
 一个 DSH 插件：让助手用 **PixPin** 截图、标注、贴图，并通过 **AutoHotkey v2** 编排真实的鼠标键盘操作。
-注册两个工具：`pixpin_screenshot` 和 `desktop_action`。
+最多注册两个工具：`pixpin_screenshot` 和 `desktop_action`；两个都可以在配置里单独关掉，
+只保留截图时不需要安装 AutoHotkey。
 
 ## 已验证版本
 
@@ -87,14 +88,33 @@
 | `autohotkeyPath` | 自动探测 v2 | 环境变量 `AUTOHOTKEY_PATH` 优先 |
 | `captureTimeoutMs` | 30000 | 即时截图超时 |
 | `regionTimeoutMs` | 120000 | 区域截图等待用户的时间 |
+| `capture` | `true` | 是否注册 `pixpin_screenshot` |
+| `desktopAction` | `'auto'` | 是否注册 `desktop_action`：`'auto'` 只在找到 AutoHotkey v2 时注册；`'on'` 总是注册（找不到就在调用时报错）；`'off'` 从不注册。也接受 `true`/`false` |
 
-目前没有声明的 Config schema，字段不会在插件管理页里校验。
+值写错（例如 `capture: 'yes'`、`desktopAction: 'of'`）会让插件加载失败并在日志里报出具体字段，
+而不是悄悄按默认值继续。目前没有声明的 Config schema，字段不会在插件管理页里校验。
+
+### 只开截图（关闭桌面操作）
+
+```yaml
+- insert:
+    - id: pixpin-screen
+      name: '@local/pixpin-screen'
+      config:
+        desktopAction: 'off'
+```
+
+重启 DSH 后 `desktop_action` 不会注册，模型完全看不到这个会注入真实输入的工具；
+截图、标注、贴图照常工作，也不再需要 AutoHotkey。反过来只想保留桌面操作就设 `capture: false`。
+
+想让「装没装 AutoHotkey」自动决定，就不要写这个字段（默认 `'auto'`）：找不到 v2 时工具不注册，
+只在日志里留一条提示；显式写的 `autohotkeyPath` 算作已配置，仍会注册，以便调用时回显路径错误。
 
 ## 前置条件
 
 - Windows 10/11 x64，且是**已解锁的交互式会话**（锁屏、RDP 断开、UAC 安全桌面下截图会失败）。
 - PixPin 3.6.x 已安装并能接受脚本调用（插件会以 `-f <script>` 启动它）。
-- 只有 `desktop_action` 需要 AutoHotkey **v2**；v1 语法不兼容。
+- 只有 `desktop_action` 需要 AutoHotkey **v2**；v1 语法不兼容。只开截图时不需要它。
 - DSH 的附件服务已挂载（桌面版默认有）；没有附件时工具会直接报错而不是吞掉截图。
 
 ## 限制
@@ -122,3 +142,5 @@ icon.svg            插件图标
 
 在「设置 → 插件」里关闭 **PixPin 截图与桌面操作**，两个工具会一并消失；已经贴在桌面上的图片
 和临时目录不会自动清理。
+
+只想关掉桌面操作、保留截图，就改上面的 `desktopAction: 'off'`，不必停用整个插件。

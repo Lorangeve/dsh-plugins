@@ -1,9 +1,9 @@
 {
   "name": "@local/pixpin-screen",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
-  "description": "Captures the screen through PixPin, annotates and pins it, and runs orchestrated mouse/keyboard actions with AutoHotkey.",
+  "description": "Captures the screen through PixPin, annotates and pins it, and runs orchestrated mouse/keyboard actions with AutoHotkey. Either tool can be switched off in the plugin config.",
   "exports": {
     ".": "./index.js",
     "./locale/*.json": "./locale/*.json",
