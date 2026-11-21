@@ -13,3 +13,10 @@ desktop.ini
 *.log
 *.local.yml
 .tmp/
+.probe-spawn.json
+
+# .NET build intermediates. The published payloads stay tracked:
+# dotnet-host/bin/ and desktop-notify/dotnet-plugins/ are part of the plugins.
+*/src/**/bin/
+*/src/**/obj/
+*.user
