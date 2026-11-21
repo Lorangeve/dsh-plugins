@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Desktop notifications",
+    "description": "Shows a Windows notification when a session finishes, or needs your approval, an answer, or attention after an error, and clicking it opens the session that raised it. A bundled .NET helper sends the toast; a click switches the GUI that is already open, and only falls back to a browser when no GUI is connected."
+  }
+}

@@ -1,0 +1,8 @@
+- insert:
+    - id: desktop-notify
+      name: '@local/desktop-notify'
+      config:
+        notifyOnComplete: true
+        notifyOnAttention: true
+        notifyOnError: true
+        minTaskSeconds: 5
