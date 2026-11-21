@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": ".NET 插件接入",
+    "description": "用一个常驻 worker 进程加载 .NET 插件程序集，把带 [DshTool] 的方法注册成 Harness 工具。热调用只是一次 stdio 往返，不用每次启动进程；插件崩溃也只影响 worker。"
+  }
+}

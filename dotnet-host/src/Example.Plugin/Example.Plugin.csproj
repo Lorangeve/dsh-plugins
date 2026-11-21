@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Example.Plugin</AssemblyName>
+    <RootNamespace>Example.Plugin</RootNamespace>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The abstractions assembly is shared with the host: the worker resolves
+         it from its own directory so both sides see one type identity. -->
+    <ProjectReference Include="..\DshDotnet.Abstractions\DshDotnet.Abstractions.csproj">
+      <Private>false</Private>
+    </ProjectReference>
+  </ItemGroup>
+
+</Project>

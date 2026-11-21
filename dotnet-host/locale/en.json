@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Access .NET plugins",
+    "description": "Runs .NET plugin assemblies in one long-lived worker process and exposes their [DshTool] methods as Harness tools. A warm call is a stdio round-trip instead of a process start, and a crashing plugin only takes down the worker."
+  }
+}

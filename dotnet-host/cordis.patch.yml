@@ -1,0 +1,9 @@
+- insert:
+    - id: dotnet-host
+      name: '@local/dotnet-host'
+      config:
+        enabled: true
+        requestTimeoutMs: 30000
+        forwardEvents:
+          - agent/status
+          - agent/error
