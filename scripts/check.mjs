@@ -29,6 +29,19 @@ async function requireFile(file, where) {
   if (!(await isFile(file))) problems.push(`${where}: missing ${path.relative(ROOT, file)}`);
 }
 
+/**
+ * `files` in a package manifest may name either a file or a directory
+ * (`bin`, `src`, `dotnet-plugins`), so presence of either one counts.
+ * @param {string} target @param {string} where
+ */
+async function requirePath(target, where) {
+  try {
+    await stat(target);
+  } catch {
+    problems.push(`${where}: missing ${path.relative(ROOT, target)}`);
+  }
+}
+
 /** @param {string} dir */
 async function checkPlugin(dir) {
   const where = path.relative(ROOT, dir);
@@ -61,7 +74,7 @@ async function checkPlugin(dir) {
 
   for (const entry of manifest.files ?? []) {
     if (entry.includes('*')) continue;
-    await requireFile(path.join(dir, entry), `${where} files`);
+    await requirePath(path.join(dir, entry), `${where} files`);
   }
 
   for (const locale of ['en.json', 'zh.json']) {
